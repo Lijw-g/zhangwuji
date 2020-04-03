@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    name: zhangwuji
+    url: jdbc:mysql://39.98.156.124:3306/wuji?characterEncoding=UTF-8
+    username: root
+    password: Wujibisheng1
+    driver-class-name: com.mysql.jdbc.Driver
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  config-location: classpath:mybatis-config.xml
+  mapUnderscoreToCamelCase: true
+
+
+server:
+  port: 8080
+#logging:
+#  config: classpath:logback.xml
+#  level:
+#    com.railway.manager: debug
+#  path: /data/logs

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+
+    <insert id="insert" parameterType="user">
+        <![CDATA[
+            insert into user (user_name, display_name, password, create_user, update_user,sex,phone,status)
+                    values (#{userName}, #{displayName}, #{password}, #{createUser}, #{updateUser},#{sex},#{phone},#{status})
+        ]]>
+    </insert>
+
+    <select id="selectList" parameterType="map" resultType="userVo">
+        <![CDATA[
+            select
+                u.id,
+                u.user_name as userName,
+                u.display_name as displayName,
+                u.phone,
+                u.sex,
+                f_getDictByCode('sex',u.sex) as sexName,
+                u.status,
+                f_getDictByCode('status',u.status) as statusName,
+                u.create_time as createTime,
+                ru.role_code as roleCode,
+                u.photo
+            from user u
+                left join role_user ru
+                    on u.user_name = ru.user_name
+        ]]>
+        <where>
+            <if test="name != null and name != ''">
+                and u.user_name like "%"#{name}"%"
+            </if>
+            <if test="passwordEqual != null and passwordEqual != ''">
+                and u.password = #{passwordEqual}
+            </if>
+            <if test="userNameEqual != null and userNameEqual != ''">
+                and u.user_name = #{userNameEqual}
+            </if>
+            <if test="advanceColumnLike != null">
+                <![CDATA[ AND CONCAT_WS(',' ]]>
+                <![CDATA[ , u.user_name ]]>
+                <![CDATA[ , u.display_name ]]>
+                <![CDATA[ , u.phone ]]>
+                <![CDATA[ ) Like #{advanceColumnLike} ]]>
+            </if>
+        </where>
+        <![CDATA[order by u.user_name  ]]>
+        <if test="_limit != null and _offset !=null">
+            limit #{_limit} offset #{_offset}
+        </if>
+    </select>
+
+    <select id="getUserById" parameterType="map" resultType="userVo">
+        <![CDATA[
+            select
+            u.id,
+                u.user_name as userName,
+                u.display_name as displayName,
+                u.phone,
+                u.sex,
+                u.photo,
+                f_getDictByCode('sex',u.sex) as sexName,
+                u.status,
+                f_getDictByCode('status',u.status) as statusName,
+                u.create_time as createTime,
+                ru.role_code as roleCode
+            from user u
+                left join role_user ru
+                    on u.user_name = ru.user_name
+        ]]>
+        <where>
+            <if test="userId != null and userId != ''">
+                and u.id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCount" parameterType="map" resultType="int">
+        <![CDATA[
+            select count(*) from user u
+        ]]>
+        <where>
+            <if test="name != null and name != ''">
+                and u.user_name like "%"#{name}"%"
+            </if>
+            <if test="userNameEqual != null and userNameEqual != ''">
+                and TRIM(u.user_name) = #{userNameEqual}
+            </if>
+            <if test="passwordEqual != null and passwordEqual != ''">
+                and u.password = #{passwordEqual}
+            </if>
+            <if test="advanceColumnLike != null">
+                <![CDATA[ AND CONCAT_WS(',' ]]>
+                <![CDATA[ , u.user_name ]]>
+                <![CDATA[ , u.display_name ]]>
+                <![CDATA[ , u.phone ]]>
+                <![CDATA[ ) Like #{advanceColumnLike} ]]>
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="user">
+        <![CDATA[
+        update user u
+            set
+            u.display_name = #{displayName},
+            u.phone = #{phone},
+            u.sex = #{sex},
+            u.status = #{status}
+        ]]>
+        <where>
+            u.user_name = #{userName}
+        </where>
+    </update>
+
+    <update id="updatePwd" parameterType="user">
+        <![CDATA[
+        update user u
+            set
+            u.password = #{password}
+        ]]>
+        <where>
+            u.user_name = #{userName}
+        </where>
+    </update>
+
+    <update id="updateStatus" parameterType="user">
+        <![CDATA[
+        update user u
+            set
+            u.status = #{status}
+        ]]>
+        <where>
+            u.user_name = #{userName}
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="map">
+        <![CDATA[
+            delete from user
+                where user_name = #{userNameEqual}
+        ]]>
+    </delete>
+
+    <update id="insertPhoto" parameterType="map">
+        <![CDATA[
+        update user u
+            set
+            u.photo = #{photo}
+        ]]>
+        <where>
+            u.id = #{id}
+        </where>
+    </update>
+</mapper>
