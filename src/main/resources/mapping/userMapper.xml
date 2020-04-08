@@ -24,11 +24,9 @@
                 u.status,
                 f_getDictByCode('status',u.status) as statusName,
                 u.create_time as createTime,
-                ru.role_code as roleCode,
+
                 u.photo
             from user u
-                left join role_user ru
-                    on u.user_name = ru.user_name
         ]]>
         <where>
             <if test="name != null and name != ''">
@@ -67,10 +65,9 @@
                 u.status,
                 f_getDictByCode('status',u.status) as statusName,
                 u.create_time as createTime,
-                ru.role_code as roleCode
+
             from user u
-                left join role_user ru
-                    on u.user_name = ru.user_name
+
         ]]>
         <where>
             <if test="userId != null and userId != ''">
