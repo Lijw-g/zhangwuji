@@ -1,12 +1,13 @@
 package com.zhangwuji.api.controller;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import com.zhangwuji.api.Enum.ConstantEnum;
 import com.zhangwuji.api.po.User;
 import com.zhangwuji.api.service.system.UserService;
 import com.zhangwuji.api.vo.UserVo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,7 @@ import java.util.Map;
 @Api(tags = "登录及注册功能接口", value = "登录及注册功能接口")
 @Controller
 @RequestMapping("/api")
+@Slf4j
 public class LoginController {
 
     @Autowired
@@ -34,14 +36,18 @@ public class LoginController {
     @GetMapping("/login")
     @ResponseBody
     @ApiOperation(value = "用户登录", notes = "用户登录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "phone", value = "手机号", required = true),
+            @ApiImplicitParam(name = "password", value = "密码", required = true)
+    })
     public Map<String, Object> login(HttpServletRequest request,
-                                     @RequestParam String userName,
+                                     @RequestParam String phone,
                                      @RequestParam String password,
                                      @RequestParam(required = false) String imageCode,
                                      @RequestParam(required = false) String userTaskId) {
-
+        log.info("login {},{}",phone,password);
         //检查验证码
-        Map<String, Object> resultMap = new HashMap<String, Object>();
+        Map<String, Object> resultMap = Maps.newHashMap();
 
 //        if (StringUtils.isBlank(imageCode)) {
 //            resultMap.put("code", "501");
@@ -62,9 +68,9 @@ public class LoginController {
 //        }
 
         //核对参数
-        if (StringUtils.isBlank(userName)) {
+        if (StringUtils.isBlank(phone)) {
             resultMap.put("code", "504");
-            resultMap.put("description", "请输入用户名");
+            resultMap.put("description", "请输入手机号");
             return resultMap;
         }
         if (StringUtils.isBlank(password)) {
@@ -75,7 +81,7 @@ public class LoginController {
 
         //检查用户
         Map<String, Object> paramMap = new HashMap<String, Object>();
-        paramMap.put("userNameEqual", userName);
+        paramMap.put("phone", phone);
         paramMap.put("passwordEqual", password);
         List<UserVo> userList = userService.getList(paramMap);
 

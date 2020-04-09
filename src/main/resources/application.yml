@@ -13,8 +13,5 @@ mybatis:
 
 server:
   port: 8080
-#logging:
-#  config: classpath:logback.xml
-#  level:
-#    com.railway.manager: debug
-#  path: /data/logs
+logging:
+  config: classpath:logback-spring.xml

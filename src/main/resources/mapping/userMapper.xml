@@ -7,7 +7,7 @@
 
     <insert id="insert" parameterType="user">
         <![CDATA[
-            insert into user (user_name, display_name, password, create_user, update_user,sex,phone,status)
+            insert into user_info (user_name, display_name, password, create_user, update_user,sex,phone,status)
                     values (#{userName}, #{displayName}, #{password}, #{createUser}, #{updateUser},#{sex},#{phone},#{status})
         ]]>
     </insert>
@@ -20,13 +20,12 @@
                 u.display_name as displayName,
                 u.phone,
                 u.sex,
-                f_getDictByCode('sex',u.sex) as sexName,
+                u.sex as sexName,
                 u.status,
-                f_getDictByCode('status',u.status) as statusName,
+                u.status as statusName,
                 u.create_time as createTime,
-
                 u.photo
-            from user u
+            from user_info u
         ]]>
         <where>
             <if test="name != null and name != ''">
@@ -35,8 +34,8 @@
             <if test="passwordEqual != null and passwordEqual != ''">
                 and u.password = #{passwordEqual}
             </if>
-            <if test="userNameEqual != null and userNameEqual != ''">
-                and u.user_name = #{userNameEqual}
+            <if test="phone != null and phone != ''">
+                and u.phone = #{phone}
             </if>
             <if test="advanceColumnLike != null">
                 <![CDATA[ AND CONCAT_WS(',' ]]>
@@ -66,7 +65,7 @@
                 f_getDictByCode('status',u.status) as statusName,
                 u.create_time as createTime,
 
-            from user u
+            from user_info u
 
         ]]>
         <where>
@@ -78,7 +77,7 @@
 
     <select id="selectCount" parameterType="map" resultType="int">
         <![CDATA[
-            select count(*) from user u
+            select count(*) from user_info u
         ]]>
         <where>
             <if test="name != null and name != ''">
@@ -102,7 +101,7 @@
 
     <update id="update" parameterType="user">
         <![CDATA[
-        update user u
+        update user_info u
             set
             u.display_name = #{displayName},
             u.phone = #{phone},
@@ -116,7 +115,7 @@
 
     <update id="updatePwd" parameterType="user">
         <![CDATA[
-        update user u
+        update user_info u
             set
             u.password = #{password}
         ]]>
@@ -127,7 +126,7 @@
 
     <update id="updateStatus" parameterType="user">
         <![CDATA[
-        update user u
+        update user_info u
             set
             u.status = #{status}
         ]]>
@@ -138,14 +137,14 @@
 
     <delete id="delete" parameterType="map">
         <![CDATA[
-            delete from user
+            delete from user_info
                 where user_name = #{userNameEqual}
         ]]>
     </delete>
 
     <update id="insertPhoto" parameterType="map">
         <![CDATA[
-        update user u
+        update user_info u
             set
             u.photo = #{photo}
         ]]>
